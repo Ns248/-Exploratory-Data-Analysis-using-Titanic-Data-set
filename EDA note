@@ -1,0 +1,69 @@
+# Import library
+
+import numpy as np
+import pandas as pd 
+import matplotlib.pyplot as plt
+
+# Import data
+df = pd.read_csv("tested.csv")
+df.head()
+df.info()
+df.shape
+df.isnull().sum()
+
+# most of the missing values are missing from cabin and age.
+   - so we will delete the column cabin becoz most of the data is missing.
+   
+   df=df.drop(["Cabin"],axis=1)
+   
+   # some of the data is also missing from the column age 
+   df.Age.isna().sum()
+   
+   # Impute the missing Value in age
+   
+   df["Age"]=df["Age"].fillna(df["Age"].mode()[0])
+   
+   # Impute the missing Value in Fare
+   df["Fare"]=df["Fare"].fillna(df["Fare"].mode()[0])
+   
+   df.isna().sum()
+   
+# so now we can see There is no missing value present in data set
+
+# Lets do the feature eng.
+# Extract the useful info from the data set.
+
+# 01.Survived and died
+df.Survived.value_counts().plot(kind="pie",autopct=("'%.2f%%' "),colors=["blue","orange"])
+plt.legend()
+plt.show()
+
+
+# Ratio between the male and female survived
+
+df.groupby(by=["Sex"])["Survived"].value_counts().plot(kind="bar")
+plt.show()
+
+# Details of the person with maximum and minimum age
+
+df.loc[df["Age"]==df["Age"].max()]
+df.loc[df["Age"]==df["Age"].min()]
+
+# now lets check the :
+  - 01. How many childs of range below 12 survived and died.
+  - 02. How many adults of range above 12 to 50 survived and died.
+  - 03. How many  old of range above 50 died and survived.
+  
+  df1=df["Age"]<12
+df1.sum()
+pd.crosstab(df["Survived"],df["Age"]<12)
+
+df1=(df["Age"]>12) & (df["Age"]<=50)
+df1.sum()
+pd.crosstab(df["Survived"],(df["Age"]>12)&(df["Age"]<=50))
+
+df1=df["Age"]>50
+df1.sum()
+pd.crosstab(df["Survived"], df["Age"]>50)
+
+
